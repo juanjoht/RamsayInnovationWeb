@@ -1,0 +1,111 @@
+<div class="formgrid grid mt-2">
+    <p-toast></p-toast>
+    <div class="field col-12 sm:col-2"></div>
+    <div class="field col-12 sm:col-8">
+            <p-table #dtStudents [value]="students" styleClass="p-datatable-gridlines" [tableStyle]="{'min-width': '40rem'}" [columns]="cols" responsiveLayout="scroll" [rows]="10"  [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"  [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Managment Students</h5>
+                        <span class="block mt-2 md:mt-0">
+                            <button pButton pRipple title="Add New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>                            
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th  pSortableColumn="username">UserName <p-sortIcon field="username"></p-sortIcon></th>
+                        <th  pSortableColumn="firstName">First Name <p-sortIcon field="firstName"></p-sortIcon></th>
+                        <th  pSortableColumn="lastName">Last Name <p-sortIcon field="lastName"></p-sortIcon></th>
+                        <th  pSortableColumn="age">Age <p-sortIcon field="age"></p-sortIcon></th>
+                        <th  pSortableColumn="career">Career <p-sortIcon field="career"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-student>
+                    <tr>
+                        <td>
+                            <span class="p-column-title">UserName</span>
+                            {{student.username}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">FirstName</span>
+                            {{student.firstName}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">LastName</span>
+                            {{student.lastName}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Age</span>
+                            {{student.age}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Career</span>
+                            {{student.career}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button title="Editar" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editStudent(student)" ></button>
+                                <button title="Eliminar" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger mr-2" (click)="deleteStudent(student.id)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <p-dialog [(visible)]="studentDialog" [style]="{width: '700px',height: '400px'}" [breakpoints]="{ '960px': '75vw' }" [draggable]="false" [maximizable]="true"  [modal]="true" class="p-fluid">
+            <ng-template pTemplate="header">
+                <span class="text-xl font-bold text-center">{{action}} Student</span>
+            </ng-template>
+            <ng-template pTemplate="content">
+                <form [formGroup]="formStudent" >
+                 <div class="formgrid grid">
+                    <div class="field col-12 sm:col-4">
+                        <label for="userNameInput" class="font-bold">UserName*</label>
+                        <input id="userNameInput" type="text" pInputText formControlName="username"  [ngClass]="{'ng-invalid ng-dirty' : submittedBasic && f.username.errors}" >
+                        <small class="ng-dirty ng-invalid" *ngIf="submittedBasic && f?.username?.errors?.required">UserName is required.</small>
+                    </div>
+                    <div class="field col-12 sm:col-4">
+                        <label for="firstNameInput" class="font-bold">First Name*</label>
+                        <input id="firstNameInput" type="text" pInputText formControlName="firstName"  [ngClass]="{'ng-invalid ng-dirty' : submittedBasic && f.firstName.errors}" >
+                        <small class="ng-dirty ng-invalid" *ngIf="submittedBasic && f?.firstName?.errors?.required">First Name is required.</small>
+                    </div>
+                    <div class="field col-12 sm:col-4">
+                        <label for="lastNameInput" class="font-bold">Last Name*</label>
+                        <input id="lastNameInput" type="text" pInputText formControlName="lastName"  [ngClass]="{'ng-invalid ng-dirty' : submittedBasic && f.lastName.errors}" >
+                        <small class="ng-dirty ng-invalid" *ngIf="submittedBasic && f?.lastName?.errors?.required">Last Name is required.</small>
+                    </div>
+                    <div class="field col-12 sm:col-4">
+                        <label for="ageInput" class="font-bold">Age*</label>
+                        <p-inputNumber id="ageInput" inputId="minmax" inputId="minmax" [min]="0" formControlName="age" [ngClass]="{'ng-invalid ng-dirty' : submittedBasic && f.age.errors}"> </p-inputNumber>
+                        <small class="ng-dirty ng-invalid" *ngIf="submittedBasic && f?.age?.errors?.required">Age is required.</small>
+                    </div>
+                    <div class="field col-12 sm:col-4">
+                        <label for="careerInput" class="font-bold">Career*</label>
+                        <input id="careerInput" type="text" pInputText formControlName="career"  [ngClass]="{'ng-invalid ng-dirty' : submittedBasic && f.career.errors}" >
+                        <small class="ng-dirty ng-invalid" *ngIf="submittedBasic && f?.career?.errors?.required">Career is required.</small>
+                    </div>
+
+                </div>
+            </form>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveStudent()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deleteDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span>Do you want to delete the record?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteSelected()"></button>
+            </ng-template>
+        </p-dialog>
+
+
+</div>
+
+
